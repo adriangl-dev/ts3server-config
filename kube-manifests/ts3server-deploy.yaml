@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts3server
+  namespace: ts3server
+  labels:
+    app: ts3server
+spec:
+  hostNetwork: true
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ts3server
+  template:
+    metadata:
+      namespace: ts3server
+      labels:
+        app: ts3server
+    spec:
+      containers:
+        - name: teamspeak-server
+          image: ertagh/teamspeak3-server:arm32v7-latest-box86
+          ports:
+            - name: ts
+              containerPort: 9987
+              protocol: UDP
+          env:
+            - name: TS3SERVER_LICENSE
+              value: accept
+            - name: TIME_ZONE
+              value: Europe/Madrid
+            - name: TS_UPDATE
+              value: "1"
+          volumeMounts:
+          - mountPath: /teamspeak/save
+            name: teamspeak-data
+          resources:
+            requests:
+              cpu: 1
+              memory: 512Mi
+      volumes:
+        - name: teamspeak-data
+          persistentVolumeClaim:
+            claimName: ts3server-pvc

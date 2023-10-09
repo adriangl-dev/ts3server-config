@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  teamspeak:
+    container_name: ts3server
+    image: ertagh/teamspeak3-server:arm32v7-latest-box86
+    restart: always
+    ports:
+      - 9987:9987/udp
+      - 10011:10011
+      - 30033:30033
+    volumes:
+      - ./teamspeak/:/teamspeak/save/
+    environment:
+      TS3SERVER_LICENSE: accept
+      TIME_ZONE: Europe/Madrid
+      TS_UPDATE: 1

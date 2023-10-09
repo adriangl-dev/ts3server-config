@@ -1,0 +1,6 @@
+resources:
+  - ts3server-ns.yaml
+  - ts3server-pv.yaml
+  - ts3server-pvc.yaml
+  - ts3server-deploy.yaml
+  - ts3server-service.yaml
