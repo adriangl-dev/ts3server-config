@@ -12,10 +12,10 @@ metadata:
   namespace: stremio
 spec:
   accessModes:
-    - ReadWriteOnce # Adecuado para un solo pod que escribe datos.
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi # Ajusta el tamaño según tus necesidades.
+      storage: 1Gi
 
 ---
 
@@ -175,7 +175,7 @@ metadata:
   labels:
     app: aiostreams
 spec:
-  replicas: 1 # Puedes escalar el número de réplicas si es necesario.
+  replicas: 1
   selector:
     matchLabels:
       app: aiostreams
