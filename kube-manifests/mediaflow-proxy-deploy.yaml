@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mediaflow-proxy
+  name: mediaflow-proxy
+  namespace: stremio
+  resourceVersion: "116873881"
+  uid: 9b9fca78-a64c-4eee-9236-e2cc71d4b3be
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mediaflow-proxy
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mediaflow-proxy
+    spec:
+      containers:
+      - env:
+        - name: API_PASSWORD
+          value: "" # Set this to your API password
+        - name: PROXY_URL
+          value: http://warp-cloudflare-vpn:1080
+        - name: TRANSPORT_ROUTES
+          value: '{ "https://torrentio.strem.fun": { "proxy": true }, "https://api.real-debrid.com": { "proxy": true }}'
+        image: mhdzumair/mediaflow-proxy
+        imagePullPolicy: Always
+        name: mediaflow-proxy
+        ports:
+        - containerPort: 8888
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mediaflow-proxy
+  name: mediaflow-proxy
+  namespace: stremio
+  resourceVersion: "115722552"
+  uid: 24d4cb23-7f60-4d08-8c09-7c098b404761
+spec:
+  ports:
+  - port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    app: mediaflow-proxy
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/server-snippet: grpc_read_timeout 120s; grpc_send_timeout
+      120s; client_body_timeout 120s;  \n
+  creationTimestamp: "2025-07-16T23:58:27Z"
+  labels:
+    name: stremio
+  name: mf-ingress
+  namespace: stremio
+  resourceVersion: "117962396"
+  uid: fe007cf8-5c2a-4a6d-884b-0c9593b46e25
+spec:
+  ingressClassName: public
+  rules:
+  - host: proxy.inner-circle.ovh
+    http:
+      paths:
+      - backend:
+          service:
+            name: mediaflow-proxy
+            port:
+              number: 8888
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - proxy.inner-circle.ovh
+    secretName: mf-tls
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  creationTimestamp: "2025-07-17T00:26:02Z"
+  labels:
+    name: stremio
+  name: mf-tls
+  namespace: stremio
+  ownerReferences:
+  - apiVersion: networking.k8s.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Ingress
+    name: mf-ingress
+    uid: fe007cf8-5c2a-4a6d-884b-0c9593b46e25
+  resourceVersion: "117962540"
+  uid: fd9344c4-23dd-4a12-9e1e-a3243e71be36
+spec:
+  dnsNames:
+  - proxy.inner-circle.ovh
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: mf-tls
+  usages:
+  - digital signature
+  - key encipherment

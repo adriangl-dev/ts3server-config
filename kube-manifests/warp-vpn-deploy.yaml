@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: warp-socks-passwd
+  name: warp-cloudflare-vpn
   namespace: stremio
   labels:
-    app: warp-socks-passwd
+    app: warp-cloudflare-vpn
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: warp-socks-passwd
+      app: warp-cloudflare-vpn
   template:
     metadata:
       labels:
-        app: warp-socks-passwd
+        app: warp-cloudflare-vpn
     spec:
       containers:
-      - name: warp-socks-passwd
+      - name: warp-cloudflare-vpn
         image: caomingjun/warp
         imagePullPolicy: Always
         env:
@@ -56,15 +56,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: warp-socks-passwd
+  name: warp-cloudflare-vpn
   namespace: stremio
 spec:
   selector:
-    app: warp-socks-passwd
+    app: warp-cloudflare-vpn
   ports:
   - name: socks-port
     port: 1080
     targetPort: 1080
     protocol: TCP
   type: ClusterIP
-
