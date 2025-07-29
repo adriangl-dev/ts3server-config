@@ -1,0 +1,149 @@
+# k8s-manifests.yaml
+
+# --- Namespace para todos los objetos ---
+# Crea un espacio de nombres aislado para tus aplicaciones.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: stremio
+
+---
+
+# --- PersistentVolumeClaim para los datos de aiostreams ---
+# Esto crea una solicitud de almacenamiento persistente para los datos de tu aplicación.
+# Necesitas un PersistentVolume disponible en tu clúster que satisfaga esta solicitud.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: aiostreams-data-pvc
+  namespace: stremio
+spec:
+  accessModes:
+    - ReadWriteOnce # Adecuado para un solo pod que escribe datos.
+  resources:
+    requests:
+      storage: 1Gi # Ajusta el tamaño según tus necesidades.
+
+---
+
+# --- Deployment para la aplicación aiostreams ---
+# Define cómo se deben ejecutar los contenedores de tu aplicación.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiostreams
+  namespace: stremio
+  labels:
+    app: aiostreams
+spec:
+  replicas: 1 # Puedes escalar el número de réplicas si es necesario.
+  selector:
+    matchLabels:
+      app: aiostreams
+  template:
+    metadata:
+      labels:
+        app: aiostreams
+    spec:
+      containers:
+        - name: aiostreams
+          image: ghcr.io/viren070/aiostreams:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: aiostreams-env
+          volumeMounts:
+            - name: data-storage
+              mountPath: /app/data
+      volumes:
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: aiostreams-data-pvc
+
+---
+
+# --- Service para la aplicación aiostreams ---
+# Expone el Deployment de aiostreams dentro del clúster para que Traefik pueda encontrarlo.
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiostreams
+  namespace: stremio
+spec:
+  selector:
+    app: aiostreams
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/server-snippet: "grpc_read_timeout 120s; grpc_send_timeout
+      120s; client_body_timeout 120s;  \n"
+  labels:
+    name: stremio
+  name: aiostreams-ingress
+  namespace: stremio
+  resourceVersion: "1053653"
+  uid: 39aec9fa-f12c-438d-b1c6-ab5ad4e1bfb0
+spec:
+  ingressClassName: public
+  rules:
+  - host: aiostreams.inner-circle.ovh
+    http:
+      paths:
+      - backend:
+          service:
+            name: aiostreams
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - aiostreams.inner-circle.ovh
+    secretName: aiostreams-tls
+status:
+  loadBalancer:
+    ingress:
+    - ip: 127.0.0.1
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  creationTimestamp: "2025-07-16T21:20:28Z"
+  generation: 1
+  labels:
+    name: stremio
+  name: aiostreams-tls
+  namespace: stremio
+  ownerReferences:
+  - apiVersion: networking.k8s.io/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Ingress
+    name: aiostreams-ingress
+    uid: 39aec9fa-f12c-438d-b1c6-ab5ad4e1bfb0
+  resourceVersion: "1054440"
+  uid: b0efbe5b-c2a9-4fbc-b0fa-727d679fe048
+spec:
+  dnsNames:
+  - aiostreams.inner-circle.ovh
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  secretName: aiostreams-tls
+  usages:
+  - digital signature
+  - key encipherment
+
