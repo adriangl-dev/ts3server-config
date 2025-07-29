@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: aiolists
-        image: ghcr.io/sebastianmorel/aiolists:latest
+        image: adriangl/aiolist-addon:latest
         ports:
         - containerPort: 7000
         envFrom:
@@ -63,8 +63,10 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/server-snippet: grpc_read_timeout 120s; grpc_send_timeout
-      120s; client_body_timeout 120s;  \n
+    nginx.ingress.kubernetes.io/server-snippet: "grpc_read_timeout 120s; grpc_send_timeout
+      120s; client_body_timeout 120s;  \n"
+  labels:
+    name: stremio
   name: aiolists-ingress
   namespace: stremio
   resourceVersion: "117962396"
@@ -94,6 +96,7 @@ kind: Certificate
 metadata:
   creationTimestamp: "2025-07-17T00:26:02Z"
   labels:
+    name: stremio
   name: aiolists-tls
   namespace: stremio
   ownerReferences:
