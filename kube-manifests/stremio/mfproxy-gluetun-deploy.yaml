@@ -41,14 +41,20 @@ spec:
           value: wireguard
         - name: WIREGUARD_PRIVATE_KEY
           value: EHa74h0U+vveezCffvBQLf1ytpfMAWkKl1Jrg5J853k=
-        - name: HTTPPROXY_LISTENING_ADDRESS
-          value: :7777
+        ports:
+        - containerPort: 7777
+          protocol: TCP        
+        securityContext:
+         privileged: true
+         capabilities:
+           add:
+           - NET_ADMIN
       - name: mediaflow-proxy
         image: mhdzumair/mediaflow-proxy
         imagePullPolicy: Always
         env:
         - name: API_PASSWORD
-          value: "" # Set this to your API password
+          value: mfp99887755 # Set this to your API password
         - name: PROXY_URL
           value: http://localhost:7777 #http://warp-cloudflare-vpn:1080
         - name: TRANSPORT_ROUTES
@@ -57,11 +63,6 @@ spec:
         - containerPort: 8888
           protocol: TCP
         resources: {}
-        securityContext:
-          privileged: true
-          capabilities:
-            add:
-            - NET_ADMIN
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
       dnsPolicy: ClusterFirst

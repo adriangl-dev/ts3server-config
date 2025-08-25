@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trakt-auth
+  namespace: stremio
+  labels:
+    app: trakt-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trakt-auth
+  template:
+    metadata:
+      labels:
+        app: trakt-auth
+    spec:
+      containers:
+      - name: trakt-auth
+        image: adriangl/trakt-auth:latest
+        envFrom:
+        - configMapRef:
+            name: trakt-auth-env
+      restartPolicy: Always
