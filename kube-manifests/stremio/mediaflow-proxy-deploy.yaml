@@ -26,16 +26,36 @@ spec:
         app: mediaflow-proxy
     spec:
       containers:
-      - env:
+      - name: gluetun-vpn
+        image: qmcgaw/gluetun
+        imagePullPolicy: Always
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: protonvpn
+        - name: SERVER_COUNTRIES
+          value: Netherlands
+        - name: FREE_ONLY
+          value: "true"
+        - name: UPDATER_PERIOD
+          value: 24h
+        - name: VPN_TYPE
+          value: wireguard
+        - name: WIREGUARD_PRIVATE_KEY
+          value: EHa74h0U+vveezCffvBQLf1ytpfMAWkKl1Jrg5J853k=
+        - name: HTTPPROXY_LISTENING_ADDRESS
+          value: :7777
+      - name: mediaflow-proxy
+        image: mhdzumair/mediaflow-proxy
+        imagePullPolicy: Always
+        env:
         - name: API_PASSWORD
           value: "" # Set this to your API password
         - name: PROXY_URL
-          value: http://warp-cloudflare-vpn:1080
+          value: http://localhost:7777 #http://warp-cloudflare-vpn:1080
         - name: TRANSPORT_ROUTES
           value: '{ "https://torrentio.strem.fun": { "proxy": true }, "https://api.real-debrid.com": { "proxy": true }}'
-        image: mhdzumair/mediaflow-proxy
-        imagePullPolicy: Always
-        name: mediaflow-proxy
+
+        
         ports:
         - containerPort: 8888
           protocol: TCP
