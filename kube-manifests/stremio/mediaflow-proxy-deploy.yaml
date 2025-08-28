@@ -29,14 +29,8 @@ spec:
         ports:
         - containerPort: 8888
           protocol: TCP
-        resources: {}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
 
 ---
 
@@ -47,8 +41,6 @@ metadata:
     app: mediaflow-proxy
   name: mediaflow-proxy
   namespace: stremio
-  resourceVersion: "115722552"
-  uid: 24d4cb23-7f60-4d08-8c09-7c098b404761
 spec:
   ports:
   - port: 8888
@@ -67,8 +59,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/server-snippet: grpc_read_timeout 120s; grpc_send_timeout
-      120s; client_body_timeout 120s;  \n
-  creationTimestamp: "2025-07-16T23:58:27Z"
+      120s; client_body_timeout 120s;
   labels:
     name: stremio
   name: mf-ingress
@@ -98,7 +89,6 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  creationTimestamp: "2025-07-17T00:26:02Z"
   labels:
     name: stremio
   name: mf-tls
