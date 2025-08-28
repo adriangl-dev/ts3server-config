@@ -158,11 +158,8 @@ data:
   WEBSTREAMR_URL: aHR0cHM6Ly93ZWJzdHJlYW1yLmhheWQudWs=
 kind: Secret
 metadata:
-  creationTimestamp: "2025-07-16T13:44:53Z"
   name: aiostreams-env
   namespace: stremio
-  resourceVersion: "116871478"
-  uid: 88e0bb7f-a423-4b39-8160-c23d4f714283
 type: Opaque
 
 ---
@@ -223,7 +220,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/server-snippet: "grpc_read_timeout 120s; grpc_send_timeout
-      120s; client_body_timeout 120s;  \n"
+      120s; client_body_timeout 120s;"
   labels:
     name: stremio
   name: aiostreams-ingress
@@ -253,7 +250,6 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  creationTimestamp: "2025-07-16T21:20:28Z"
   generation: 1
   labels:
     name: stremio
@@ -266,7 +262,6 @@ metadata:
     kind: Ingress
     name: aiostreams-ingress
     uid: 39aec9fa-f12c-438d-b1c6-ab5ad4e1bfb0
-  resourceVersion: "1054440"
   uid: b0efbe5b-c2a9-4fbc-b0fa-727d679fe048
 spec:
   dnsNames:

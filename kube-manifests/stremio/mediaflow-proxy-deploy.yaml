@@ -5,45 +5,17 @@ metadata:
     app: mediaflow-proxy
   name: mediaflow-proxy
   namespace: stremio
-  resourceVersion: "116873881"
-  uid: 9b9fca78-a64c-4eee-9236-e2cc71d4b3be
 spec:
-  progressDeadlineSeconds: 600
   replicas: 1
-  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: mediaflow-proxy
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: mediaflow-proxy
     spec:
       containers:
-      - name: gluetun-vpn
-        image: qmcgaw/gluetun
-        imagePullPolicy: Always
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: protonvpn
-        - name: SERVER_COUNTRIES
-          value: Netherlands
-        - name: FREE_ONLY
-          value: "true"
-        - name: UPDATER_PERIOD
-          value: 24h
-        - name: VPN_TYPE
-          value: wireguard
-        - name: WIREGUARD_PRIVATE_KEY
-          value: EHa74h0U+vveezCffvBQLf1ytpfMAWkKl1Jrg5J853k=
-        - name: HTTPPROXY_LISTENING_ADDRESS
-          value: :7777
       - name: mediaflow-proxy
         image: mhdzumair/mediaflow-proxy
         imagePullPolicy: Always
@@ -51,7 +23,7 @@ spec:
         - name: API_PASSWORD
           value: "" # Set this to your API password
         - name: PROXY_URL
-          value: http://localhost:7777 #http://warp-cloudflare-vpn:1080
+          value: http://warp-cloudflare-vpn:1080 #http://warp-cloudflare-vpn:1080
         - name: TRANSPORT_ROUTES
           value: '{ "https://torrentio.strem.fun": { "proxy": true }, "https://api.real-debrid.com": { "proxy": true }}'
         ports:

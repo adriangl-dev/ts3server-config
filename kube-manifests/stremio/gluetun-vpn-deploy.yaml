@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gluetun-vpn
+  name: gluetun-vpn
+  namespace: stremio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gluetun-vpn
+  template:
+    metadata:
+      labels:
+        app: gluetun-vpn
+    spec:
+      containers:
+      - name: gluetun-vpn
+        image: qmcgaw/gluetun
+        imagePullPolicy: Always
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: protonvpn
+        - name: SERVER_COUNTRIES
+          value: Netherlands
+        - name: FREE_ONLY
+          value: "true"
+        - name: UPDATER_PERIOD
+          value: 24h
+        - name: VPN_TYPE
+          value: wireguard
+        - name: WIREGUARD_PRIVATE_KEY
+          value: EHa74h0U+vveezCffvBQLf1ytpfMAWkKl1Jrg5J853k=
+        - name: HTTPPROXY
+          value: on
+        - name: HTTP_LISTENING_ADDRESS
+          value: :7777
+        - name: HTTP_STEALTH
+          value: on
+        ports:
+        - containerPort: 7777
+          protocol: TCP        
+        securityContext:
+         privileged: true
+         capabilities:
+           add:
+           - NET_ADMIN
+        volumeMounts:
+        - name: lib-modules
+          mountPath: /lib/modules
+          readOnly: true
+      volumes:
+      - name: lib-modules
+        hostPath:
+          path: /lib/modules
+          type: Directory
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gluetun-vpn
+  namespace: stremio
+spec:
+  selector:
+    app: gluetun-vpn
+  ports:
+  - name: http-port
+    port: 7777
+    targetPort: 7777
+    protocol: TCP
+  type: ClusterIP

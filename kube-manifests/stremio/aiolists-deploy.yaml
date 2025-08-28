@@ -64,13 +64,11 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/server-snippet: "grpc_read_timeout 120s; grpc_send_timeout
-      120s; client_body_timeout 120s;  \n"
+      120s; client_body_timeout 120s;"
   labels:
     name: stremio
   name: aiolists-ingress
   namespace: stremio
-  resourceVersion: "117962396"
-  uid: fe007cf8-5c2a-4a6d-884b-0c9593b46e25
 spec:
   ingressClassName: public
   rules:
@@ -94,7 +92,6 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  creationTimestamp: "2025-07-17T00:26:02Z"
   labels:
     name: stremio
   name: aiolists-tls
@@ -105,9 +102,6 @@ metadata:
     controller: true
     kind: Ingress
     name: aiolists-ingress
-    uid: fe007cf8-5c2a-4a6d-884b-0c9593b46e25
-  resourceVersion: "117962540"
-  uid: fd9344c4-23dd-4a12-9e1e-a3243e71be36
 spec:
   dnsNames:
   - aiolists.inner-circle.ovh
