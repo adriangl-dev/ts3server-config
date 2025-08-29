@@ -24,53 +24,41 @@ spec:
           value: protonvpn
         - name: SERVER_COUNTRIES
           value: Netherlands
-        - name: UPDATER_PERIOD
-          value: 24h
-        - name: VPN_TYPE
-          value: wireguard
-        - name: WIREGUARD_PRIVATE_KEY
-          value: EHa74h0U+vveezCffvBQLf1ytpfMAWkKl1Jrg5J853k=
+            #- name: UPDATER_PERIOD
+            # value: 24h
+            # - name: VPN_TYPE
+            # value: wireguard
+            #- name: WIREGUARD_PRIVATE_KEY
+            # value: EHa74h0U+vveezCffvBQLf1ytpfMAWkKl1Jrg5J853k=
         - name: HTTPPROXY
           value: "on"
         - name: HTTPPROXY_LISTENING_ADDRESS
           value: ":7777"
         - name: HTTPPROXY_STEALTH
           value: "on"
-        - name: WIREGUARD_ENDPOINT_IP
-          value: "212.8.243.129"
-        - name: WIREGUARD_PUBLIC_KEY
-          value: hMEV9hdZ+yFGPKZQgsQESJ5ptQstLa9rmjsBVH6oJjQ=
-        - name: WIREGUARD_ADDRESSES
-          value: "10.2.0.2/32"
-        - name: VPN_INTERFACE
-          value: wg1
+        - name: HTTPPROXY_LOG
+          value: "on"
+            # - name: WIREGUARD_ENDPOINT_IP
+            # value: "212.8.243.129"
+            # - name: WIREGUARD_PUBLIC_KEY
+            # value: hMEV9hdZ+yFGPKZQgsQESJ5ptQstLa9rmjsBVH6oJjQ=
+            #- name: WIREGUARD_ADDRESSES
+            #value: "10.2.0.2/32"
+        - name: OPENVPN_USER
+          value: 2mlfOwBB4XCxuZzQ
+        - name: OPENVPN_PASSWORD
+          value: "" 
         ports:
         - containerPort: 7777
           protocol: TCP        
         securityContext:
-         privileged: true
          capabilities:
            add:
            - NET_ADMIN
-        volumeMounts:
-        - name: lib-modules
-          mountPath: /lib/modules
-          readOnly: true
-        - name: dev-tun
-          mountPath: /dev/net/tun
-          readOnly: false
-      volumes:
-      - name: lib-modules
-        hostPath:
-          path: /lib/modules
-          type: Directory
-      - name: dev-tun
-        hostPath:
-          path: /dev/net/tun
-          type: CharDevice
-      dnsPolicy: ClusterFirst
+      - name: curl-container
+        image: quay.io/curl/curl:latest
+        command: ["sleep", "infinity"]
       restartPolicy: Always
-      hostNetwork: true
 
 ---
 
