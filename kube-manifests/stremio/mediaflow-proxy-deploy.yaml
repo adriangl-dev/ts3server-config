@@ -64,8 +64,6 @@ metadata:
     name: stremio
   name: mf-ingress
   namespace: stremio
-  resourceVersion: "117962396"
-  uid: fe007cf8-5c2a-4a6d-884b-0c9593b46e25
 spec:
   ingressClassName: public
   rules:
@@ -99,9 +97,6 @@ metadata:
     controller: true
     kind: Ingress
     name: mf-ingress
-    uid: fe007cf8-5c2a-4a6d-884b-0c9593b46e25
-  resourceVersion: "117962540"
-  uid: fd9344c4-23dd-4a12-9e1e-a3243e71be36
 spec:
   dnsNames:
   - proxy.inner-circle.ovh

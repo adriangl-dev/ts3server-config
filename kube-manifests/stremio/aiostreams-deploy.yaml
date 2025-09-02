@@ -20,6 +20,11 @@ spec:
 ---
 
 apiVersion: v1
+kind: Secret
+metadata:
+  name: aiostreams-env
+  namespace: stremio
+type: Opaque
 data:
   ADDON_CATALOG_CACHE_TTL: MzAw
   ADDON_ID: ImFpb3N0cmVhbXMuaW5uZXItY2lyY2xlLm92aCI=
@@ -156,11 +161,6 @@ data:
   USER_API_RATE_LIMIT_MAX_REQUESTS: NQ==
   USER_API_RATE_LIMIT_WINDOW: NQ==
   WEBSTREAMR_URL: aHR0cHM6Ly93ZWJzdHJlYW1yLmhheWQudWs=
-kind: Secret
-metadata:
-  name: aiostreams-env
-  namespace: stremio
-type: Opaque
 
 ---
 
@@ -225,8 +225,6 @@ metadata:
     name: stremio
   name: aiostreams-ingress
   namespace: stremio
-  resourceVersion: "1053653"
-  uid: 39aec9fa-f12c-438d-b1c6-ab5ad4e1bfb0
 spec:
   ingressClassName: public
   rules:
@@ -261,8 +259,6 @@ metadata:
     controller: true
     kind: Ingress
     name: aiostreams-ingress
-    uid: 39aec9fa-f12c-438d-b1c6-ab5ad4e1bfb0
-  uid: b0efbe5b-c2a9-4fbc-b0fa-727d679fe048
 spec:
   dnsNames:
   - aiostreams.inner-circle.ovh
