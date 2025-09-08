@@ -1,0 +1,43 @@
+# ---------------------------
+# Mediaflow-proxy Deployment
+# ---------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediaflow-proxy
+  namespace: stremio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mediaflow-proxy
+  template:
+    metadata:
+      labels:
+        app: mediaflow-proxy
+    spec:
+      containers:
+        - name: mediaflow-proxy
+          image: mhdzumair/mediaflow-proxy
+          ports:
+            - containerPort: 8888
+          env:
+            - name: API_PASSWORD
+              value: ""
+            - name: PROXY_URL
+              value: "http://gluetun:8080"
+            - name: TRANSPORT_ROUTES
+              value: '{ "https://torrentio.strem.fun": { "proxy": true } }'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediaflow-proxy
+  namespace: stremio
+spec:
+  selector:
+    app: mediaflow-proxy
+  ports:
+    - port: 8888
+      targetPort: 8888
+      protocol: TCP
