@@ -23,17 +23,13 @@ spec:
             privileged: true
           env:
             - name: VPN_SERVICE_PROVIDER
-              value: "protonvpn"
+              value: "privado"
             - name: SERVER_COUNTRIES
-              value: Netherlands
-            - name: FREE_ONLY
-              value: "true"
-            - name: UPDATER_PERIOD
-              value: "24h"
-            - name: VPN_TYPE
-              value: "wireguard"
-            - name: WIREGUARD_PRIVATE_KEY
-              value: ""
+              value: "Netherlands"
+            - name: OPENVPN_USER
+              value: "pvstbpqv592410"
+            - name: OPENVPN_PASSWORD
+              value: "" #PASSWORD PRIVADO VPN
             - name: HTTPPROXY
               value: "on"
             - name: HTTPPROXY_LISTENING_ADDRESS
