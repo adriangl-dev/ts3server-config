@@ -1,3 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gluetun-env
+  namespace: stremio
+data:
+  HTTPPROXY: "on"
+  HTTPPROXY_LISTENING_ADDRESS: ":7777"
+  FIREWALL_INPUT_PORTS: "7777"
+  VPN_SERVICE_PROVIDER: "protonvpn"
+  SERVER_COUNTRIES: "Netherlands"
+  FREE_ONLY: "on"
+  VPN_TYPE: "wireguard"
+  WIREGUARD_PRIVATE_KEY: ""
+  # OPENVPN_USER: "pvstbpqv592410"
+  # OPENVPN_PASSWORD: ""
+---
 # ---------------------------
 # Gluetun Deployment
 # ---------------------------
@@ -21,28 +38,9 @@ spec:
           image: qmcgaw/gluetun
           securityContext:
             privileged: true
-          env:
-            - name: HTTPPROXY
-              value: "on"
-            - name: HTTPPROXY_LISTENING_ADDRESS
-              value: ":7777"
-            - name: FIREWALL_INPUT_PORTS
-              value: "7777"
-            - name: VPN_SERVICE_PROVIDER
-              value: "protonvpn"
-            - name: SERVER_COUNTRIES
-              value: "Netherlands"
-            - name: FREE_ONLY
-              value: "on"
-            - name: VPN_TYPE
-              value: "wireguard"
-            - name: WIREGUARD_PRIVATE_KEY
-              value: ""
-            # - name: OPENVPN_USER
-            #   value: "pvstbpqv592410"
-            # - name: OPENVPN_PASSWORD
-            #   value: ""
-
+          envFrom:
+            - configMapRef:
+                name: gluetun-env
           ports:
             - containerPort: 7777
           livenessProbe:
