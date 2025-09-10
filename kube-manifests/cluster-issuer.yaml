@@ -4,11 +4,9 @@ items:
   kind: ClusterIssuer
   metadata:
     name: letsencrypt
-    resourceVersion: "1051750"
-    uid: 64b4fe66-7ba2-4753-83f2-3ed57c04150d
   spec:
     acme:
-      email: adriangl@outlook.com
+      email: email@changeme.com #modificar email
       preferredChain: ""
       privateKeySecretRef:
         name: letsencrypt-account-key
