@@ -25,9 +25,9 @@ spec:
             - name: API_PASSWORD
               value: ""
             - name: PROXY_URL
-              value: "http://gluetun:8080"
+              value: "http://gluetun:7777" #http://warp-vpn:1080
             - name: TRANSPORT_ROUTES
-              value: '{ "https://torrentio.strem.fun": { "proxy": true } }'
+              value: '{ "https://torrentio.strem.fun": { "proxy": false } }'
 ---
 apiVersion: v1
 kind: Service
