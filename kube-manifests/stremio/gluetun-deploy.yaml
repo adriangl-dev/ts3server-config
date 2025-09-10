@@ -32,6 +32,8 @@ spec:
               value: "protonvpn"
             - name: SERVER_COUNTRIES
               value: "Netherlands"
+            - name: FREE_ONLY
+              value: "on"
             - name: VPN_TYPE
               value: "wireguard"
             - name: WIREGUARD_PRIVATE_KEY
