@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mediaflow-proxy-env
+  namespace: stremio
+data:
+  API_PASSWORD: ""
+  PROXY_URL: "http://warp-vpn:1080" # http://warp-vpn:1080 / http://gluetun:7777
+  TRANSPORT_ROUTES: '{ "https://torrentio.strem.fun": { "proxy": false } }'
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,13 +31,9 @@ spec:
       - name: mediaflow-proxy
         image: mhdzumair/mediaflow-proxy
         imagePullPolicy: Always
-        env:
-        - name: API_PASSWORD
-          value: "" # Set this to your API password
-        - name: PROXY_URL
-          value: http://warp-cloudflare-vpn:1080 #http://warp-cloudflare-vpn:1080
-        - name: TRANSPORT_ROUTES
-          value: '{ "https://torrentio.strem.fun": { "proxy": true }, "https://api.real-debrid.com": { "proxy": true }}'
+        envFrom:
+        - configMapRef:
+            name: mediaflow-proxy-env
         ports:
         - containerPort: 8888
           protocol: TCP
